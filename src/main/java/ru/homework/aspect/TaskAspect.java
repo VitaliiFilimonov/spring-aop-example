@@ -19,12 +19,12 @@ public class TaskAspect {
         logger.info("Начало выполнения метода '{}'", joinPoint.getSignature());
     }
 
-    @AfterReturning(pointcut = "execution(* ru.homework.service.TaskService.createNewTask(..))", returning = "result")
+    @AfterReturning(value = "@annotation(ru.homework.annotation.SaveTaskLog)", returning = "result")
     public void saveTaskAfterReturning(Object result) {
-        logger.info("Задача с индексом '{}' успешно сохранена!", Long.parseLong(result.toString()));
+        logger.info("Задача с индексом '{}' успешно сохранена!", result);
     }
 
-    @AfterThrowing(pointcut = "execution(* ru.homework.controller.TaskController.*(..))", throwing = "taskException")
+    @AfterThrowing(pointcut = "execution(* ru.homework.service.TaskService.*(..))", throwing = "taskException")
     public void afterThrowingTaskException(TaskException taskException) {
         logger.error("Выброшено исключение с типом '{}' . Сообщение: {}", taskException.getClass().getName(), taskException.getMessage());
     }

@@ -5,49 +5,75 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.homework.annotation.LogTimeInterval;
+import ru.homework.annotation.SaveTaskLog;
+import ru.homework.dto.TaskDTO;
+import ru.homework.exception.TaskException;
 import ru.homework.model.Task;
 import ru.homework.repository.TaskRepository;
+import ru.homework.utils.TaskMapper;
+import ru.homework.utils.Util;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
 
     private final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
-    public Long createNewTask(Task task) {
-        return taskRepository.save(task).getId();
+    private final TaskMapper mapper;
+
+    @Autowired
+    public TaskService(TaskRepository taskRepository, TaskMapper mapper) {
+        this.taskRepository = taskRepository;
+        this.mapper = mapper;
     }
 
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+    @SaveTaskLog
+    public long createNewTask(TaskDTO taskDTO) throws TaskException {
+        if (!Util.isDTOEmpty(taskDTO)) {
+            Task task = mapper.mapToTask(taskDTO);
+            return taskRepository.save(task).getId();
+        }
+
+        throw new TaskException("Не переданы данные для сохранения!");
+    }
+
+    public TaskDTO getTaskById(long id) throws TaskException {
+        return mapper.mapToTaskDTO(
+                taskRepository.findById(id)
+                        .orElseThrow(
+                                () -> new TaskException("Not found task with id '" + id + "'!")
+                        )
+        );
     }
 
     @Transactional
-    public Long updateTaskById(Long id, Task newTask) {
+    public long updateTaskById(long id, TaskDTO taskDTO) {
         taskRepository.findById(id).ifPresentOrElse(
                 task -> {
-                    task.setTitle(newTask.getTitle());
-                    task.setUserId(newTask.getUserId());
+                    mapper.update(taskDTO, task);
                     taskRepository.save(task);
                 },
-
                 () -> logger.warn("Task with id = {} not found", id)
         );
 
         return id;
     }
 
-    public Long removeTaskById(Long id) {
+    @LogTimeInterval
+    public long removeTaskById(Long id) {
         taskRepository.deleteById(id);
         return id;
     }
 
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<TaskDTO> getAllTasks() {
+        return taskRepository.findAll()
+                .stream()
+                .map(
+                        mapper::mapToTaskDTO
+                ).toList();
     }
 }

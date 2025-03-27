@@ -3,8 +3,8 @@ package ru.homework.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.homework.annotation.LogTimeInterval;
+import ru.homework.dto.TaskDTO;
 import ru.homework.exception.TaskException;
-import ru.homework.model.Task;
 import ru.homework.service.TaskService;
 
 import java.util.List;
@@ -13,34 +13,35 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
-    @LogTimeInterval
+    @Autowired
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
     @PostMapping
-    public Long createNewTask(@RequestBody Task task) {
-        return taskService.createNewTask(task);
+    public long createNewTask(@RequestBody TaskDTO taskDTO) throws TaskException {
+        return taskService.createNewTask(taskDTO);
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) throws TaskException {
-        return taskService.getTaskById(id).orElseThrow(
-                () -> new TaskException("Not found task with id '" + id + "'!")
-        );
+    public TaskDTO getTaskById(@PathVariable long id) throws TaskException {
+        return taskService.getTaskById(id);
     }
 
     @PutMapping("/{id}")
-    public Long updateTask(@PathVariable Long id, @RequestBody Task newTask) {
-        return taskService.updateTaskById(id, newTask);
+    public long updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
+        return taskService.updateTaskById(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")
-    public Long removeTaskById(@PathVariable Long id) {
+    public long removeTaskById(@PathVariable long id) {
         return taskService.removeTaskById(id);
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskDTO> getAllTasks() {
         return taskService.getAllTasks();
     }
 }

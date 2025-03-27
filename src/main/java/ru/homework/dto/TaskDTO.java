@@ -1,23 +1,14 @@
-package ru.homework.model;
+package ru.homework.dto;
 
-import jakarta.persistence.*;
+public class TaskDTO {
 
-@Entity
-@Table(name = "task")
-public class Task {
-
-    @Id
-    @SequenceGenerator(name = "task_seq", sequenceName = "task_seq", allocationSize = 1)
-    @GeneratedValue(generator = "task_seq")
     private Long id;
 
     private String title;
 
     private String description;
 
-    @Column(name = "user_id")
     private Long userId;
-
 
     public Long getId() {
         return id;
