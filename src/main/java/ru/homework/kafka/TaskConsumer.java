@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import ru.homework.service.NotificationService;
 import ru.homework.service.TaskService;
 
 import java.io.IOException;
@@ -18,9 +19,12 @@ public class TaskConsumer {
 
     private final TaskService taskService;
 
+    private final NotificationService notificationService;
+
     @Autowired
-    public TaskConsumer(TaskService taskService) {
+    public TaskConsumer(TaskService taskService, NotificationService notificationService) {
         this.taskService = taskService;
+        this.notificationService = notificationService;
     }
 
     @KafkaListener(topics="${kafka.topic}")
@@ -31,6 +35,7 @@ public class TaskConsumer {
         try {
             map = mapper.readValue(message, Map.class);
             taskService.updateTaskById(Long.parseLong(map.get("id")), map.get("status"));
+            notificationService.sendMessage("vitalifilimonov@yandex.ru", "Test", "Success update status!");
         } catch (IOException ex) {
             logger.error("Переданы некорректные данные во время обновления задачи!");
         }

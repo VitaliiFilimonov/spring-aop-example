@@ -1,4 +1,18 @@
 spring:
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: vitalifilimonov
+    password: vcglzeqeuhrrlgao
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 465
+          auth: true
+          starttls:
+            enable: true
   kafka:
     bootstrap-servers: localhost:9092
   datasource:
