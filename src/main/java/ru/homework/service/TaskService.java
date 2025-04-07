@@ -3,6 +3,7 @@ package ru.homework.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.homework.annotation.LogTimeInterval;
@@ -35,6 +36,7 @@ public class TaskService {
     public long createNewTask(TaskDTO taskDTO) throws TaskException {
         if (!Util.isDTOEmpty(taskDTO)) {
             Task task = mapper.mapToTask(taskDTO);
+            task.setStatus(Task.TaskStatus.OPEN);
             return taskRepository.save(task).getId();
         }
 
@@ -51,10 +53,10 @@ public class TaskService {
     }
 
     @Transactional
-    public long updateTaskById(long id, TaskDTO taskDTO) {
+    public long updateTaskById(long id, String status) {
         taskRepository.findById(id).ifPresentOrElse(
                 task -> {
-                    mapper.update(taskDTO, task);
+                    task.setStatus(Task.TaskStatus.valueOf(status));
                     taskRepository.save(task);
                 },
                 () -> logger.warn("Task with id = {} not found", id)

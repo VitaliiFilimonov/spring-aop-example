@@ -15,6 +15,10 @@ public class Task {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "task_status")
+    private TaskStatus status;
+
     @Column(name = "user_id")
     private Long userId;
 
@@ -43,11 +47,23 @@ public class Task {
         this.description = description;
     }
 
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public enum TaskStatus {
+        OPEN, REVIEW, APPROVED, REJECTED;
     }
 }
