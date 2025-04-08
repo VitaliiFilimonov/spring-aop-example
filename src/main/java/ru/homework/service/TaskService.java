@@ -1,7 +1,5 @@
 package ru.homework.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.homework.annotation.LogTimeInterval;
 import ru.homework.annotation.SaveTaskLog;
 import ru.homework.dto.TaskDTO;
-import ru.homework.dto.UpdateStatusDTO;
 import ru.homework.exception.TaskException;
 import ru.homework.model.Task;
 import ru.homework.repository.TaskRepository;
 import ru.homework.utils.TaskMapper;
 import ru.homework.utils.Util;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TaskService {
@@ -67,15 +62,13 @@ public class TaskService {
     }
 
     @Transactional
-    public void updateTaskWithKafka(UpdateStatusDTO statusDTO) {
-        updateTaskById(statusDTO.getId(), statusDTO.getStatus().name());
-        kafkaTemplate.send(topic, statusDTO.toString());
-    }
-
-    private void updateTaskById(long id, String status) {
+    public void updateTaskById(long id, TaskDTO taskDTO) {
         taskRepository.findById(id).ifPresentOrElse(
                 task -> {
-                    task.setStatus(Task.TaskStatus.valueOf(status));
+                    if (taskDTO.getStatus() != null && !taskDTO.getStatus().name().equals(task.getStatus().name()))
+                        kafkaTemplate.send(topic, taskDTO.toString());
+
+                    mapper.update(taskDTO, task);
                     taskRepository.save(task);
                 },
                 () -> logger.warn("Task with id = {} not found", id)

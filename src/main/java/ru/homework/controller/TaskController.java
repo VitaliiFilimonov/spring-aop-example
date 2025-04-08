@@ -3,7 +3,6 @@ package ru.homework.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.homework.dto.TaskDTO;
-import ru.homework.dto.UpdateStatusDTO;
 import ru.homework.exception.TaskException;
 import ru.homework.service.TaskService;
 
@@ -30,9 +29,9 @@ public class TaskController {
         return taskService.getTaskById(id);
     }
 
-    @PutMapping
-    public void updateTask(@RequestBody UpdateStatusDTO statusDTO) {
-        taskService.updateTaskWithKafka(statusDTO);
+    @PutMapping("/{id}")
+    public void updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
+        taskService.updateTaskById(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")

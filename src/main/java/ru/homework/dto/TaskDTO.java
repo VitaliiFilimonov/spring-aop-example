@@ -52,6 +52,15 @@ public class TaskDTO {
         this.userId = userId;
     }
 
+    @Override
+    public String toString() {
+        return "TaskDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", status=" + status +
+                '}';
+    }
+
     public enum TaskStatus {
         OPEN, REVIEW, APPROVED, REJECTED;
     }

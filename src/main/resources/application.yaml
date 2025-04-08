@@ -34,3 +34,9 @@ logging:
 
 kafka:
   topic: topic-example
+
+email:
+  address: vitalifilimonov@yandex.ru
+
+message:
+  from: noreply@spring-kafka-test.ru
