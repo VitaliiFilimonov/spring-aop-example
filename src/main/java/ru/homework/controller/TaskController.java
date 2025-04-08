@@ -2,7 +2,6 @@ package ru.homework.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.homework.annotation.LogTimeInterval;
 import ru.homework.dto.TaskDTO;
 import ru.homework.exception.TaskException;
 import ru.homework.service.TaskService;
@@ -31,8 +30,8 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public long updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
-        return taskService.updateTaskById(id, taskDTO);
+    public void updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
+        taskService.updateTaskById(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")

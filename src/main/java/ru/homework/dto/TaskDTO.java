@@ -8,6 +8,8 @@ public class TaskDTO {
 
     private String description;
 
+    private TaskStatus status;
+
     private Long userId;
 
     public Long getId() {
@@ -34,11 +36,32 @@ public class TaskDTO {
         this.description = description;
     }
 
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", status=" + status +
+                '}';
+    }
+
+    public enum TaskStatus {
+        OPEN, REVIEW, APPROVED, REJECTED;
     }
 }
