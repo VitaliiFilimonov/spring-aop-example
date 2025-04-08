@@ -1,10 +1,9 @@
 package ru.homework.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import ru.homework.dto.TaskDTO;
+import ru.homework.dto.UpdateStatusDTO;
 import ru.homework.exception.TaskException;
 import ru.homework.service.TaskService;
 
@@ -14,17 +13,11 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    private final String topic;
-
     private final TaskService taskService;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-
     @Autowired
-    public TaskController(TaskService taskService, @Value("${kafka.topic}") String topic, KafkaTemplate<String, String> kafkaTemplate) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.topic = topic;
-        this.kafkaTemplate = kafkaTemplate;
     }
 
     @PostMapping
@@ -38,8 +31,8 @@ public class TaskController {
     }
 
     @PutMapping
-    public void updateTask(@RequestBody String data) {
-        kafkaTemplate.send(topic, data);
+    public void updateTask(@RequestBody UpdateStatusDTO statusDTO) {
+        taskService.updateTaskWithKafka(statusDTO);
     }
 
     @DeleteMapping("/{id}")
