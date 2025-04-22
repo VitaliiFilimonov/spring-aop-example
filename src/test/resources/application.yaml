@@ -1,0 +1,40 @@
+spring:
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: vitalifilimonov
+    password: vcglzeqeuhrrlgao
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 465
+          auth: true
+          starttls:
+            enable: true
+  flyway:
+    schemas: public
+    locations: classpath:db
+    table: flyway_version
+    baseline-on-migrate: true
+    baseline-version: 0
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    ru:
+      homework: INFO
+
+kafka:
+  topic: topic-example
+
+email:
+  address: vitalifilimonov@yandex.ru
+
+message:
+  from: noreply@spring-kafka-test.ru
+
+logs:
+  example:
+    level: info
+    enable: true
