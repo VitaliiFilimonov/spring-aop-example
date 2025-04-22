@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaTemplate;
+import ru.homework.controller.TaskController;
 import ru.homework.repository.TaskRepository;
 import ru.homework.service.TaskService;
 import ru.homework.utils.TaskMapper;
 
-@Profile("unit-test")
+@Profile("unit-mvc-test")
 @Configuration
 public class TestConfig {
 
@@ -32,5 +33,10 @@ public class TestConfig {
     @Bean
     public TaskService taskService() {
         return new TaskService(taskRepository(), mapper(), "test_topic", kafkaTemplate());
+    }
+
+    @Bean
+    public TaskController taskController() {
+        return new TaskController(taskService());
     }
 }

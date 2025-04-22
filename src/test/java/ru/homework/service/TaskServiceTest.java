@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("unit-test")
+@ActiveProfiles("unit-mvc-test")
 @ContextConfiguration(classes = {TestConfig.class})
 class TaskServiceTest {
 
