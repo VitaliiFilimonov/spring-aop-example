@@ -1,4 +1,4 @@
-package ru.homework.jpa;
+package ru.homework.integration;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("integration-test")
 @Testcontainers
 @ContextConfiguration(loader = IntegrationTestConfig.class)
-class IntegrationTest {
+class IntegrationTestJpaAndKafka {
 
     @Autowired
     private TaskRepository taskRepository;
