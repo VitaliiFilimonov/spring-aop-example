@@ -12,17 +12,26 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.homework.config.IntegrationTestConfig;
 import ru.homework.dto.TaskDTO;
 import ru.homework.exception.TaskException;
+import ru.homework.kafka.TaskConsumer;
 import ru.homework.repository.TaskRepository;
 import ru.homework.service.TaskService;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
 @Testcontainers
 @ContextConfiguration(loader = IntegrationTestConfig.class)
-class JpaIntegrationTest {
+class IntegrationTest {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    TaskConsumer taskConsumer;
 
     @Autowired
     private TaskService taskService;
@@ -55,6 +64,18 @@ class JpaIntegrationTest {
         TaskDTO taskDTOAfterSave = taskService.getTaskById(1L);
 
         Assertions.assertEquals(taskDTO.getStatus().name(), taskDTOAfterSave.getStatus().name());
+    }
+
+    @Test
+    void kafkaTest() throws InterruptedException {
+        TaskDTO taskDTO = getTaskDTO();
+        taskDTO.setStatus(TaskDTO.TaskStatus.APPROVED);
+        kafkaTemplate.send("topic-example", taskDTO.toString());
+
+        boolean messageConsumed = taskConsumer.getLatch().await(10, TimeUnit.SECONDS);
+
+        Assertions.assertTrue(messageConsumed);
+        Assertions.assertEquals(taskConsumer.getPayload(), taskDTO.toString());
     }
 
     private TaskDTO getTaskDTO() {
