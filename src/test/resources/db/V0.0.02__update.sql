@@ -1,0 +1,6 @@
+ALTER TABLE public.task
+ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'OPEN';
+
+ALTER TABLE task
+ADD CONSTRAINT task_status_check
+CHECK (status IN ('OPEN', 'REVIEW', 'APPROVED', 'REJECTED'));

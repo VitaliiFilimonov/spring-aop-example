@@ -11,6 +11,8 @@ val postgresql = "42.7.5"
 val flyway = "9.16.3"
 val mapstruct = "1.6.3"
 val loggerStarter = "1.0"
+val testContainers = "1.20.0"
+val mockito = "5.12.0"
 
 repositories {
     mavenLocal()
@@ -27,8 +29,14 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${flyway}")
     implementation("org.mapstruct:mapstruct:${mapstruct}")
     annotationProcessor("org.mapstruct:mapstruct-processor:${mapstruct}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.testcontainers:postgresql:$testContainers")
+    testImplementation("org.testcontainers:kafka:$testContainers")
+    testImplementation("org.testcontainers:junit-jupiter:$testContainers")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:$mockito")
+    testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
 }
 
 tasks.test {
