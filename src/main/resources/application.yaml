@@ -40,3 +40,8 @@ email:
 
 message:
   from: noreply@spring-kafka-test.ru
+
+logs:
+  example:
+    level: info
+    enable: true

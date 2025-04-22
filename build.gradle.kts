@@ -10,12 +10,15 @@ version = "1.0-SNAPSHOT"
 val postgresql = "42.7.5"
 val flyway = "9.16.3"
 val mapstruct = "1.6.3"
+val loggerStarter = "1.0"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+    implementation("ru.homework:spring-starter-logger:$loggerStarter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
